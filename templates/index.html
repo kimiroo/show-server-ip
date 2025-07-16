@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Server Public IP</title>
+
+    <!-- Meta tags -->
+    <meta name="author" content="kimiroo" />
+    <meta name="description" content="Get server's public IP address with ease." />
+    <link rel="icon" href="/favicon.ico" sizes="any">
+
+    <meta property="og:title" content="Server Public IP" />
+    <meta property="og:description" content="Get server's public IP address with ease." />
+    <meta property="og:type" content="website" />
+    <meta prooerty="og:locale" content="en_US" />
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spoqa-han-sans/css/SpoqaHanSansNeo.min.css">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+</head>
+
+<body>
+    <div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog"
+        id="modalTour">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content rounded-4 shadow">
+                <div class="modal-body p-5">
+                    <div class="mb-5">
+                        <img src="{{ url_for('static', filename='img/cat.png') }}" style="width: 200px;" class="image-center image-circle">
+                    </div>
+                    <h2 class="fw-bold text-center mb-5">Server Public IP</h2>
+                    <div class="mb-2">
+                        <div>
+                            <div id="loadingWrapper">
+                                <div class="spinner-wrapper">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                                <h5 class="text-center mt-2">Loading...</h5>
+                            </div>
+                            <div id="resultWrapper" class="is-none">
+                                <div class="result-list">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-1 d-none d-sm-block">IPv4:</div>
+                                                <div class="col result-text text-center" id="resultIpv4"></div>
+                                                <div class="col-2 align-middle text-center">
+                                                    <a id="copyResultIpv4" class="link-grey link-copy"
+                                                        style="cursor:pointer;" copy-target="resultIpv4">
+                                                        <i class="bi bi-clipboard"></i><span class="hidden-sm"> Co?py</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <div class="row">
+                                                <div class="col-1 d-none d-sm-block">IPv6:</div>
+                                                <div class="col result-text text-center" id="resultIpv6"></div>
+                                                <div class="col-2 align-middle text-center">
+                                                    <a id="copyResultIpv6" class="link-grey link-copy"
+                                                        style="cursor:pointer;" copy-target="resultIpv6">
+                                                        <i class="bi bi-clipboard"></i><span class="hidden-sm"> Co?py</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>

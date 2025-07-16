@@ -1,0 +1,73 @@
+html,
+body {
+    height: 100%;
+    font-family: "Spoqa Han Sans Neo", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+}
+
+.modal-dialog {
+    max-width: 660px !important;
+}
+
+.image-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.image-circle {
+    border-radius: 50%;
+}
+
+.button-home {
+    position: absolute;
+    font-size: 1.5rem;
+    top: 2rem;
+    left: 2.5rem;
+}
+
+.link-grey {
+    color: black;
+}
+.link-grey:hover {
+    color: grey;
+}
+.link-grey,
+.link-grey:hover,
+.link-grey:visited,
+.link-grey:active {
+    text-decoration: none;
+}
+
+.spinner-wrapper {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.is-none {
+    display: none !important;
+}
+
+.list-result {
+    padding: 0.2rem 0.3rem;
+    font-weight: bold;
+}
+
+.result-text {
+    font-weight: bold;
+}
+
+.is-hidden {
+    visibility: hidden !important;
+}
+
+.custom-tooltip {
+    --bs-tooltip-bg: #28a745;
+    --bs-tooltip-color: var(--bs-white);
+}
+
+@media (max-width: 575.98px) {
+    .hidden-sm {
+        display: none;
+    }
+}
