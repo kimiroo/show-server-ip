@@ -40,6 +40,7 @@ for logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
     uvicorn_logger = logging.getLogger(logger_name)
     uvicorn_logger.handlers.clear()
     uvicorn_logger.addHandler(console_handler)
+    uvicorn_logger.propagate = False
 
 app = FastAPI(
     title='Server Static IP',
@@ -50,7 +51,7 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-if LOG_LEVEL_INT > logging.WARNING:
+if LOG_LEVEL_INT < logging.WARNING:
     app.add_middleware(AccessLogger)
 
 templates = Jinja2Templates(directory='templates')
