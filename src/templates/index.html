@@ -12,14 +12,14 @@
     <meta name="author" content="kimiroo" />
     <meta name="description" content="Get server's public IP address with ease." />
 
-    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" sizes="any">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon-32.png') }}">
-    <link rel="icon" type="image/png" sizes="48x48" href="{{ url_for('static', filename='img/favicon-48.png') }}">
-    <link rel="icon" type="image/png" sizes="180x180" href="{{ url_for('static', filename='img/favicon-180.png') }}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', filename='img/favicon-192.png') }}">
-    <link rel="icon" type="image/png" sizes="256x256" href="{{ url_for('static', filename='img/favicon-256.png') }}">
-    <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='img/favicon-512.png') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/favicon-180.png') }}">
+    <link rel="icon" href="{{ url_for('static', path='img/favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', path='img/favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ url_for('static', path='img/favicon-48.png') }}">
+    <link rel="icon" type="image/png" sizes="180x180" href="{{ url_for('static', path='img/favicon-180.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ url_for('static', path='img/favicon-192.png') }}">
+    <link rel="icon" type="image/png" sizes="256x256" href="{{ url_for('static', path='img/favicon-256.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', path='img/favicon-512.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', path='img/favicon-180.png') }}">
 
     <meta property="og:title" content="Server Public IP" />
     <meta property="og:description" content="Get server's public IP address with ease." />
@@ -34,7 +34,7 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/spoqa-han-sans/css/SpoqaHanSansNeo.min.css">
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/common.css') }}">
 </head>
 
 <body>
@@ -44,7 +44,7 @@
             <div class="modal-content rounded-4 shadow">
                 <div class="modal-body p-5">
                     <div class="mb-5">
-                        <img src="{{ url_for('static', filename='img/cat.png') }}" style="width: 200px;" class="image-center image-circle">
+                        <img src="{{ url_for('static', path='img/cat.png') }}" style="width: 200px;" class="image-center image-circle">
                     </div>
                     <h2 class="fw-bold text-center mb-5">Server Public IP</h2>
                     <div class="mb-2">
@@ -95,5 +95,5 @@
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', path='js/main.js') }}"></script>
 </body>

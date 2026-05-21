@@ -16,6 +16,12 @@ from util.const import LOG_LEVEL, LOG_LEVEL_INT, DISABLE_IPV6
 if TYPE_CHECKING:
     from util.query_public_ip import QueryPublicIp
 
+logging.basicConfig(
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=LOG_LEVEL,
+)
+
 log_format = logging.Formatter(
     '%(asctime)s [%(levelname)s] %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S'
@@ -23,8 +29,6 @@ log_format = logging.Formatter(
 
 log = logging.getLogger('app')
 log.setLevel(LOG_LEVEL)
-
-log.info('Log level: %s', LOG_LEVEL)
 
 # Handler for console output
 console_handler = logging.StreamHandler()
@@ -74,8 +78,10 @@ def health():
 @app.get('/')
 def read_root(request: Request):
     return templates.TemplateResponse(
-        'index.html',
-        {
+        request=request,
+        name='index.html',
+        context={
+            'request': request,
             'disable_ipv6': DISABLE_IPV6
         }
     )
