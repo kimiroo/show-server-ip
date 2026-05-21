@@ -1,3 +1,4 @@
+import logging
 from typing import TYPE_CHECKING
 
 from fastapi import FastAPI, Request, Depends
@@ -9,9 +10,21 @@ from util.deps import get_ip_querier
 from util.static_files_with_cache import StaticFilesWithCache
 from util.schema.ip_response import IpResponse
 from util.schema.health_response import HealthResponse
+from util.middleware.access_logger import AccessLogger
+from util.const import LOG_LEVEL, LOG_LEVEL_INT
 
 if TYPE_CHECKING:
     from util.query_public_ip import QueryPublicIp
+
+logging.basicConfig(
+    format='%(asctime)s [%(levelname)s] %(name)s - %(message)s',
+    level=LOG_LEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+
+log = logging.getLogger('app')
+
+log.info('Log level: %s', LOG_LEVEL)
 
 app = FastAPI(
     title='Server Static IP',
@@ -20,6 +33,9 @@ app = FastAPI(
     openapi_url=None,
     lifespan=lifespan
 )
+
+if LOG_LEVEL_INT > logging.WARNING:
+    app.add_middleware(AccessLogger)
 
 templates = Jinja2Templates(directory='templates')
 

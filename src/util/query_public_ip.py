@@ -1,17 +1,13 @@
-import os
-import sys
+import logging
 import asyncio
 import httpx
 
 from util.schema.ip_response import IpData, IpResponse
 
+log = logging.getLogger('query_public_ip')
+
 class QueryPublicIp:
     def __init__(self):
-        debug_str = os.getenv('DEBUG', 'false')
-        debug = True if debug_str.lower() == 'true' else False
-
-        self.debug = debug
-
         self.client = httpx.AsyncClient(timeout=5.0)
 
     async def query_public_ip(self) -> IpResponse:
@@ -24,6 +20,9 @@ class QueryPublicIp:
 
         is_success = ipv4 is not None or ipv6 is not None
 
+        if not is_success:
+            log.warning('Failed to fetch both IPv4 and IPv6 addresses.')
+
         return IpResponse(
             result='success' if is_success else 'fail',
             data=IpData(ipv4=ipv4, ipv6=ipv6)
@@ -35,14 +34,18 @@ class QueryPublicIp:
             response.raise_for_status()
 
             if not response.text:
+                log.warning('Empty response from %s', api_url)
                 return None
 
             data: dict = response.json()
-            return data.get('ip')
+            ip = data.get('ip')
+
+            log.debug('Successfully fetched IP %s from %s', ip, api_url)
+
+            return ip
 
         except Exception as e:
-            if self.debug:
-                print(f'[ERROR] Error fetching ip from \'{api_url}\': {e}', file=sys.stderr)
+            log.warning('Error fetching ip from \'%s\': %s', api_url, e)
             return None
 
     async def close_client(self):
