@@ -16,15 +16,26 @@ from util.const import LOG_LEVEL, LOG_LEVEL_INT, DISABLE_IPV6
 if TYPE_CHECKING:
     from util.query_public_ip import QueryPublicIp
 
-logging.basicConfig(
-    format='%(asctime)s [%(levelname)s] %(name)s - %(message)s',
-    level=LOG_LEVEL,
-    datefmt='%Y-%m-%d %H:%M:%S',
+log_format = logging.Formatter(
+    '%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
 )
 
 log = logging.getLogger('app')
+log.setLevel(LOG_LEVEL)
 
 log.info('Log level: %s', LOG_LEVEL)
+
+# Handler for console output
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(log_format)
+log.addHandler(console_handler)
+
+# Logger override
+for logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
+    uvicorn_logger = logging.getLogger(logger_name)
+    uvicorn_logger.handlers.clear()
+    uvicorn_logger.addHandler(console_handler)
 
 app = FastAPI(
     title='Server Static IP',
@@ -65,7 +76,6 @@ def read_root(request: Request):
     return templates.TemplateResponse(
         'index.html',
         {
-            'request': request,
             'disable_ipv6': DISABLE_IPV6
         }
     )
