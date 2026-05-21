@@ -3,6 +3,8 @@ from typing import TYPE_CHECKING
 
 from fastapi import FastAPI, Request, Depends
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from lifespan import lifespan
 from util.deps import get_ip_querier
@@ -50,6 +52,8 @@ app = FastAPI(
     openapi_url=None,
     lifespan=lifespan
 )
+
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts=["*"])
 
 if LOG_LEVEL_INT < logging.WARNING:
     app.add_middleware(AccessLogger)
