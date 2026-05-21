@@ -1,40 +1,42 @@
-import os
-from flask import Flask, render_template, jsonify, send_from_directory
-from utils.query_public_ip import QueryPublicIp
+from typing import TYPE_CHECKING
 
-app = Flask(__name__)
+from fastapi import FastAPI, Request, Depends
+from fastapi.templating import Jinja2Templates
 
-# Default cache timeout for static files (in seconds).
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 31536000
+from lifespan import lifespan
+from util.deps import get_ip_querier
 
-@app.route('/')
-def index():
-    """Serves the main HTML page."""
-    return render_template('index.html')
+from util.static_files_with_cache import StaticFilesWithCache
+from util.schema.ip_response import IpResponse
+from util.schema.health_response import HealthResponse
 
-@app.route('/api/v1/server-ip', methods=['GET'])
-def get_server_ip():
-    """
-    Returns the public IPv4 and/or IPv6 address of the server.
-    """
-    ip_querier = QueryPublicIp()
-    ip_info = ip_querier.query_public_ip()
-    return jsonify(ip_info)
+if TYPE_CHECKING:
+    from util.query_public_ip import QueryPublicIp
 
-@app.route('/api/v1/health', methods=['GET'])
+app = FastAPI(
+    title='Server Static IP',
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None,
+    lifespan=lifespan
+)
+
+templates = Jinja2Templates(directory='templates')
+
+app.mount(
+    '/static',
+    StaticFilesWithCache(directory='static', cache_timeout=31536000),
+    name='static'
+)
+
+@app.get('/api/v1/server-ip', response_model=IpResponse)
+async def get_server_ip(ip_querier: QueryPublicIp = Depends(get_ip_querier)):
+    return await ip_querier.query_public_ip()
+
+@app.get('/api/v1/health', response_model=HealthResponse)
 def health():
-    return 'alive'
+    return HealthResponse(status='alive')
 
-if __name__ == '__main__':
-    from waitress import serve
-
-    debug_str = os.getenv('DEBUG', 'false')
-    debug = True if debug_str.lower() == 'true' else False
-    host = os.getenv('HOST', '0.0.0.0')
-    port = int(os.getenv('PORT', 8080))
-
-    if debug:
-        print(f'[INFO] Debug mode enabled')
-
-    print(f'Listening on {host}:{port}')
-    serve(app, host=host, port=port)
+@app.get('/')
+def read_root(request: Request):
+    return templates.TemplateResponse('index.html', {'request': request})
