@@ -1,14 +1,20 @@
-FROM python:3.13-alpine
+FROM python:3.14-alpine
 
 ENV HOST=0.0.0.0
 ENV PORT=8080
 ENV DEBUG=false
 
-COPY . /app
 WORKDIR /app
 
+# Copy dependency data
+COPY src/requirements.txt ./
+
+# Install dependencies
 RUN apk add --no-cache curl
 RUN pip install -r requirements.txt
+
+# Copy source code
+COPY . /app
 
 EXPOSE $PORT
 
