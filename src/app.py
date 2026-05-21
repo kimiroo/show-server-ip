@@ -43,6 +43,7 @@ for logger_name in ("uvicorn", "uvicorn.error", "uvicorn.access"):
 
 app = FastAPI(
     title='Server Static IP',
+    version='2.0.0',
     docs_url=None,
     redoc_url=None,
     openapi_url=None,
@@ -60,7 +61,9 @@ app.mount(
     name='static'
 )
 
-@app.get('/api/v1/server-ip', response_model=IpResponse)
+exclude_fields = {"data": {"ipv6": True}} if DISABLE_IPV6 else None
+
+@app.get('/api/v1/server-ip', response_model=IpResponse, response_model_exclude=exclude_fields)
 async def get_server_ip(ip_querier: QueryPublicIp = Depends(get_ip_querier)):
     response =await ip_querier.query_public_ip()
 
