@@ -27,19 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (location.protocol === 'http:') {
                 unsecuredCopyToClipboard(copyTarget.innerText);
+                tooltip.show();
+                setTimeout(() => {
+                    tooltip.hide();
+                }, 2000);
             } else {
                 window.navigator.clipboard.writeText(copyTarget.innerText)
                     .then(() => {
                         tooltip.show();
-                        setTimeout(() => tooltip.hide(), 2000);
+                        setTimeout(() => {
+                            tooltip.hide()
+                        }, 2000);
                     })
                     .catch(err => console.error('Failed to copy: ', err));
             }
-
-            tooltip.show();
-            setTimeout(() => {
-                tooltip.hide();
-            }, 2000);
         });
     });
 
