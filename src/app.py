@@ -11,7 +11,7 @@ from util.static_files_with_cache import StaticFilesWithCache
 from util.schema.ip_response import IpResponse
 from util.schema.health_response import HealthResponse
 from util.middleware.access_logger import AccessLogger
-from util.const import LOG_LEVEL, LOG_LEVEL_INT
+from util.const import LOG_LEVEL, LOG_LEVEL_INT, DISABLE_IPV6
 
 if TYPE_CHECKING:
     from util.query_public_ip import QueryPublicIp
@@ -47,7 +47,14 @@ app.mount(
 
 @app.get('/api/v1/server-ip', response_model=IpResponse)
 async def get_server_ip(ip_querier: QueryPublicIp = Depends(get_ip_querier)):
-    return await ip_querier.query_public_ip()
+    response =await ip_querier.query_public_ip()
+
+    # Remove ipv6 key if ipv6 is disabled
+    dump_params = {}
+    if DISABLE_IPV6:
+        dump_params['exclude'] = {'data': {'ipv6'}}
+
+    return response.model_dump(**dump_params)
 
 @app.get('/api/v1/health', response_model=HealthResponse)
 def health():
@@ -55,4 +62,10 @@ def health():
 
 @app.get('/')
 def read_root(request: Request):
-    return templates.TemplateResponse('index.html', {'request': request})
+    return templates.TemplateResponse(
+        'index.html',
+        {
+            'request': request,
+            'disable_ipv6': DISABLE_IPV6
+        }
+    )

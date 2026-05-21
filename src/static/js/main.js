@@ -16,8 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCopyList = document.querySelectorAll('.link-copy');
     const loadingWrapper = document.getElementById('loadingWrapper');
     const resultWrapper = document.getElementById('resultWrapper');
-    const resultIpv4 = document.getElementById('resultIpv4');
-    const resultIpv6 = document.getElementById('resultIpv6');
 
     btnCopyList.forEach((elem) => {
 
@@ -30,7 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (location.protocol === 'http:') {
                 unsecuredCopyToClipboard(copyTarget.innerText);
             } else {
-                window.navigator.clipboard.writeText(copyTarget.innerText);
+                window.navigator.clipboard.writeText(copyTarget.innerText)
+                    .then(() => {
+                        tooltip.show();
+                        setTimeout(() => tooltip.hide(), 2000);
+                    })
+                    .catch(err => console.error('Failed to copy: ', err));
             }
 
             tooltip.show();
@@ -44,11 +47,21 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch(url)
     .then((response) => response.json())
     .then((resp) => {
-        const ipv4 = resp.data.ipv4;
-        const ipv6 = resp.data.ipv6;
+        if (resp.result === 'success') {
+            const resultIpv4 = document.getElementById('resultIpv4');
+            const ipv4 = resp.data.ipv4;
 
-        resultIpv4.innerText = ipv4 ? ipv4 : "Query failed";
-        resultIpv6.innerText = ipv6 ? ipv6 : "Query failed";
+            resultIpv4.innerText = ipv4 ? ipv4 : "Query failed";
+
+            if ('ipv6' in resp.data) {
+                const resultIpv6 = document.getElementById('resultIpv6');
+                const ipv6 = resp.data.ipv6;
+
+                resultIpv6.innerText = ipv6 ? ipv6 : "Query failed";
+            }
+        } else {
+            throw new Error("API returned failure status");
+        }
 
         loadingWrapper.classList.add('is-none');
         resultWrapper.classList.remove('is-none');

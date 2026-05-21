@@ -3,6 +3,7 @@ import asyncio
 import httpx
 
 from util.schema.ip_response import IpData, IpResponse
+from util.const import DISABLE_IPV6
 
 log = logging.getLogger('query_public_ip')
 
@@ -11,14 +12,16 @@ class QueryPublicIp:
         self.client = httpx.AsyncClient(timeout=5.0)
 
     async def query_public_ip(self) -> IpResponse:
-        tasks = [
-            self._fetch_ip_from_api('https://api4.ipify.org?format=json'),
-            self._fetch_ip_from_api('https://api6.ipify.org?format=json')
-        ]
+        tasks = [self._fetch_ip_from_api('https://api4.ipify.org?format=json')]
 
-        ipv4, ipv6 = await asyncio.gather(*tasks)
+        if not DISABLE_IPV6:
+            tasks.append(self._fetch_ip_from_api('https://api6.ipify.org?format=json'))
 
-        is_success = ipv4 is not None or ipv6 is not None
+        results = await asyncio.gather(*tasks)
+
+        ipv4 = results[0]
+        ipv6 = results[1] if not DISABLE_IPV6 else None
+        is_success = any(res is not None for res in results)
 
         if not is_success:
             log.warning('Failed to fetch both IPv4 and IPv6 addresses.')
