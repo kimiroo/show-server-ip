@@ -25,11 +25,6 @@ def get_server_ip():
 def health():
     return 'alive'
 
-@app.route('/favicon.ico')
-def favicon():
-    """Serves favicon.ico"""
-    return send_from_directory('static', 'img/favicon.ico')
-
 if __name__ == '__main__':
     from waitress import serve
 
